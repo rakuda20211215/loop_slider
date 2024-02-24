@@ -30,9 +30,9 @@ let customOnMounted = async (e) => {
     slidesClassName = []
 
     Array.from(slides.value.children).forEach((slide, index) => {
-      let ulid = `slide-${index}${Math.floor(Math.random() * 10000)}`
-      slide.classList.add('slide', ulid)
-      slidesClassName.push(ulid)
+      let uniqueName = `slide-${index}`
+      slide.classList.add('slide', uniqueName)
+      slidesClassName.push(uniqueName)
     })
 
     adjustCenterByClassName(slidesClassName[0], 0)
@@ -97,11 +97,12 @@ let getSpeed = (e) => {
 
 let scrollCancel = async (e) => {
   e.preventDefault()
-  if (Math.abs(totalDistanceX.value) < 2) return
-  if (Math.abs(spead) > 200) {
-    adjustCenter(spead)
-  } else {
-    adjustCenter()
+  if (Math.abs(totalDistanceX.value) > 1) {
+    if (Math.abs(spead) > 200) {
+      adjustCenter(spead)
+    } else {
+      adjustCenter()
+    }
   }
 
   spead = 0
@@ -147,7 +148,7 @@ let adjustCenter = (place = 0, duration = 0.5) => {
   for (let index = 0; index < slideLen; index++) {
     let element = slideElements[index]
     let slidesOffsetCenter = slides.value.scrollLeft + windowOffsetCenter
-    if (element.offsetLeft <= slidesOffsetCenter && element.offsetLeft + element.clientWidth >= slidesOffsetCenter) {
+    if (element.offsetLeft + element.clientWidth >= slidesOffsetCenter) {
       let targetClassName = getSlidesClassName(element)
 
       if (place > 0 && index < slideElements.length - 1) {

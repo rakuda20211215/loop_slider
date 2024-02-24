@@ -19,7 +19,8 @@ const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'gray']
   width: 100vw;
 }
 .slide-image {
-  width: 70vw;
+  width: 65vw;
   height: 50vw;
+  margin: 3vw;
 }
 </style>
