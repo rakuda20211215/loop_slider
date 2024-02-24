@@ -1,5 +1,5 @@
 <script setup>
-import { onUnmounted, ref, computed } from 'vue'
+import { onUnmounted, ref } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { ScrollToPlugin } from 'gsap/dist/ScrollToPlugin'
@@ -13,6 +13,11 @@ const props = defineProps({
   },
 })
 
+const goToNextPage = defineModel('goToNextPage', {
+  type: Boolean,
+  default: false,
+})
+
 let slidesClassName = []
 
 const validScrollMouse = ref(false)
@@ -23,7 +28,7 @@ const intervalId = ref()
 const slides = ref(null)
 
 let count = 0
-let customOnMounted = async (e) => {
+let customOnMounted = (e) => {
   count++
   console.log(e.key)
   if (count >= props.numItems) {
@@ -87,6 +92,7 @@ let getSpeed = (e) => {
     spead = Math.floor((distanceX / elapsedTime) * 100)
     let leftOffset = Math.abs(slides.value.scrollLeft) + diff
     if (e.type == 'mousemove' || e.type == 'touchmove') {
+      e.preventDefault()
       slides.value.scrollTo(leftOffset, 0)
     }
   } else {
@@ -95,14 +101,17 @@ let getSpeed = (e) => {
   mouseX = x
 }
 
-let scrollCancel = async (e) => {
-  e.preventDefault()
+let scrollCancel = (e) => {
+  goToNextPage.value = false
+
   if (Math.abs(totalDistanceX.value) > 1) {
     if (Math.abs(spead) > 200) {
       adjustCenter(spead)
     } else {
       adjustCenter()
     }
+  } else {
+    goToNextPage.value = true
   }
 
   spead = 0
